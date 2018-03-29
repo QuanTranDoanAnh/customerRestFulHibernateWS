@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    
+    <!-- ******************************************************************* -->
+    <!-- JTA (Java Transaction API). Elle fournit des interfaces Java standards entre un gestionnaire de transaction et les differentes parties 
+    impliquees dans un systeme de transactions distribuees : le gestionnaire de ressources, le serveur d'application et les applications transactionnelles.
+    JTA est un protocole de commit a deux phases :
+        - 1re phase : chaque partie prenant part a la transaction distribuee s'engage à verrouiller les donnees concernees et a valider ces donnees une fois la transaction terminee
+        - 2e phase : chaque partie valide les changements des donnees. Cette phase est obligatoire, des lors que les parties se sont engagees.
+
+    Ce protocole de commit a deux phases fonctionne plutot bien sur les transactions courtes, mais est totalement inefficace en cas de transaction lente 
+    ou le risque d'une deconnexion ou bien d'un crash entre les deux phases est eleve, car les verrous restent poses apres la premiere phase et ne sont liberes 
+    qu'apres la deuxieme phase.                                              -->
+    <!-- ******************************************************************* -->
+    
+    <persistence-unit name="customerDb" transaction-type="JTA">
+         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+         
+         <!-- On precise l'ensemble des classes qui sont gerees par l'entityManager dans l'application -->
+        <class>com.exemple.customerRestFulHibernateWS.data.model.Customer</class>
+        <class>com.exemple.customerRestFulHibernateWS.data.model.Order</class>
+        <class>com.exemple.customerRestFulHibernateWS.data.model.Product</class>
+        <!-- On exclut les classes qui ne sont pas listees ci-dessus -->
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <!-- On specifie le nom global JNDI de la datasource qui sera utilisee par le container. 
+        Ce nom est la valeur de la propriete "osgi.jndi.service.name" fournie par la commande Karaf "service:list DataSource"-->
+        <jta-data-source>osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=customerDb)</jta-data-source>
+        
+        
+        <properties>
+            
+            <!-- La propriete hibernate.dialect definit le dialecte SQL de notre base de donnees.Hibernate s'appuiera sur ce dialect 
+            pour optimiser l'execution des requetes en utilisant les proprietes specifiques a la base de donnees.
+            Dans notre cas, on utilisera le dialect de PostgreSQL-->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            
+            <!-- La propriete  hibernate.hbm2ddl.auto=none specifie que le schema de la table n'est pas automatiquement cree quand l'application est deployee.
+            Si la propriete a la valeur "create-drop", les tables de la base de donnees sont creees au deploiement de l'application et supprimees lors de l'undeployed ou de l'arret du serveur.
+            Si la propriete a la valeur "update", le schema de la base de donnees est mis a jour ou cree, mais son contenu n'est pas supprime.
+            En production, un utilisateur n'a que tres rarement le privilege de creer ou supprimer des tables.-->
+            <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            
+            <!-- On log les requetes executees par hibernate pour faciliter le debogage -->
+            <property name="hibernate.show_sql" value="true"/>
+            
+            <!-- On met des commentaires dans toutes les requetes SQL generees pour faciliter la comprehension des requetes-->
+            <property name="use_sql_comments" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            
+        </properties>
+    </persistence-unit>
+</persistence>

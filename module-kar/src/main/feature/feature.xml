@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+    <!-- Ajout de features au repository -->
+    <repository>mvn:org.apache.cxf.karaf/apache-cxf/3.2.2/xml/features</repository>
+    
+    <feature name='${project.artifactId}' description='${project.name}' version='${project.version}'>
+        <details>${project.description}</details>
+
+        <!-- Installation de la feature cxf -->
+        <feature version="3.2.2">cxf</feature>
+
+        <!-- Installation de pax-jdbc pour creer les DataSourceFactory -->
+        <!-- La creation des DataSources se fait par depot d'un fichier org.ops4j.datasource-*.cfg 
+        (ou "*" doit etre remplace par le nom de la DataSource) dans le repertoire "/etc" de Karaf -->
+        <feature>pax-jdbc</feature>
+        <feature>pax-jdbc-config</feature>
+        <feature>pax-jdbc-pool-dbcp2</feature>
+
+        <!-- Installation de hibernate-osgi 5.2.9.Final  -->
+        <feature>hibernate-orm</feature>
+        
+        <!-- Installation de la feature jdbc embarquee dans Karaf pour interroger les DataSources depuis l'invite de commande Karaf -->
+        <feature>jdbc</feature>
+         
+        <feature version="5.2.9.Final">hibernate</feature>
+        <feature version="2.6.1">jpa</feature>
+        <feature version="2.0.0">transaction</feature>
+        <feature version="4.1.5">jndi</feature>
+
+        <!-- Installation du driver PostgreSQL en tant que bundle -->
+        <bundle>mvn:com.h2database/h2/1.4.197</bundle>
+
+        <!-- On place, dans l'archive, les dependances Maven apparaissant dans le fichier customerRestFullHibernateWS/pom.xml -->
+        <bundle>mvn:org.osgi/org.osgi.core/6.0.0</bundle>
+        <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
+        <bundle>mvn:commons-io/commons-io/2.4</bundle>
+       
+                
+        <!-- On renseigne les bundles que nous avons developpes et qui seront utiles au service web REST  
+        le chemin de ces bundles est de la forme "mvn:groupId/artifactId/version" ou :
+            - groupeId est la valeur de la balise "/project/parent/groupId" du fichier "pom.xml" de chaque module
+            - artefactId est la valeur de la balise "/project/artefactId" du fichier "pom.xml" de chaque module
+            - version est la valeur de la balise "/project/parent/version" du fichier "pom.xml" de chaque module -->
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-data/0.0.1-SNAPSHOT</bundle>
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-services/0.0.1-SNAPSHOT</bundle>
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-jaxrs/0.0.1-SNAPSHOT</bundle>        
+    </feature>
+
+</features>

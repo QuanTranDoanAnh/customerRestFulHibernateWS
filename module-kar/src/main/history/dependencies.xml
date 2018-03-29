@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="module-kar-0.0.1-SNAPSHOT">
+    <feature version="0.0.0">
+        <feature prerequisite="false" dependency="false">cxf</feature>
+        <feature prerequisite="false" dependency="false">hibernate</feature>
+        <feature prerequisite="false" dependency="false">hibernate-orm</feature>
+        <feature prerequisite="false" dependency="false">jdbc</feature>
+        <feature prerequisite="false" dependency="false">jndi</feature>
+        <feature prerequisite="false" dependency="false">jpa</feature>
+        <feature prerequisite="false" dependency="false">pax-jdbc</feature>
+        <feature prerequisite="false" dependency="false">pax-jdbc-config</feature>
+        <feature prerequisite="false" dependency="false">pax-jdbc-pool-dbcp2</feature>
+        <feature prerequisite="false" dependency="false">transaction</feature>
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-data/0.0.1-SNAPSHOT</bundle>
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-jaxrs/0.0.1-SNAPSHOT</bundle>
+        <bundle>mvn:com.exemple.customerRestFulHibernateWS/module-services/0.0.1-SNAPSHOT</bundle>
+        <bundle>mvn:com.h2database/h2/1.4.197</bundle>
+        <bundle>mvn:commons-io/commons-io/2.4</bundle>
+        <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
+        <bundle>mvn:org.eclipse.aether/aether-api/0.9.0.M2</bundle>
+        <bundle>mvn:org.eclipse.aether/aether-util/0.9.0.M2</bundle>
+        <bundle>mvn:org.osgi/org.osgi.core/6.0.0</bundle>
+    </feature>
+</features>

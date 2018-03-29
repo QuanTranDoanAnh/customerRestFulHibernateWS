@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Licensed to the Apache Software Foundation (ASF) under one or more 
+		contributor license agreements. See the NOTICE file distributed with this 
+		work for additional information regarding copyright ownership. The ASF licenses 
+		this file to You under the Apache License, Version 2.0 (the "License"); you 
+		may not use this file except in compliance with the License. You may obtain 
+		a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+		required by applicable law or agreed to in writing, software distributed 
+		under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+		OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+		the specific language governing permissions and limitations under the License. -->
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>customerRestFulHibernateWS</artifactId>
+		<groupId>com.exemple.customerRestFulHibernateWS</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>module-data</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>module-data Blueprint Bundle</name>
+	<description>module-data OSGi blueprint bundle project.</description>
+
+	<properties>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- Dependance pour BundleContext -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Dependance pour org.osgi.service.log.LogService -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.3.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<JPA-PersistenceUnits>customerDb</JPA-PersistenceUnits>
+                        <!-- Le fichier MANIFEST.MF sera rempli avec les informations ci-dessous. Pour plus d'informations : http://wiki.osgi.org/wiki/Category:Manifest_Header -->
+                        
+                        <!-- La balise <Meta-Persistence> pointe sur le fichier "persistence.xml" afin que JPA cree une EntityManagerFactory 
+                        pour ce bundle-->
+                        <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence> <!-- Valable car c'est un bundle de persistance. Repertorie tous les emplacements des fichiers persistence.xml dans le bundle de persistance -->
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>com.exemple.customerRestFulHibernateWS.data*;version=${project.version}</Export-Package>
+						<Import-Package>
+							<!-- Necessaire pour le proxy de Javassist sous peine d'avoir le message "java.lang.RuntimeException: by java.lang.NoClassDefFoundError: org/hibernate/proxy/HibernateProxy" -->
+                            org.hibernate.proxy,javassist.util.proxy,*
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<maxmem>256M</maxmem>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

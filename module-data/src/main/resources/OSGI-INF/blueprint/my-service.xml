@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:jpa="http://aries.apache.org/xmlns/jpa/v2.0.0" xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.2.0"
+	default-activation="lazy">
+
+	<!-- On active JPA -->
+	<jpa:enable />
+
+	<!-- Definition de l'enregistrement du service dans le registre de services 
+		OSGI. On renseigne le bean qui fournit le service via l'attribut ref -->
+	<service ref="customerDao"
+		interface="com.exemple.customerRestFulHibernateWS.data.CustomerDao">
+		<service-properties>
+			<entry key="service.exported.interfaces" value="*" />
+		</service-properties>
+	</service>
+
+	<!-- Les runtimes d'applications OSGI traitent les services distants differemment 
+		de ceux en local a cause de la semantique d'invocation par defaut qui est 
+		differente (passage par reference local versus passage par valeur distant). 
+		Pour eviter qu'une application appelle accidentellement un service exporte 
+		qui est uniquement designe par un appel par "passage de valeur", il faut 
+		cacher le lookup local. La solution est d'exporter le meme bean deux fois 
+		: une fois pour les appels distants et une autre pour les appels locaux. 
+		En d'autres termes, on ajoute un autre element avec la meme configuration 
+		mais sans la propriete "service.exported.interfaces" -->
+	<service ref="customerDao"
+		interface="com.exemple.customerRestFulHibernateWS.data.CustomerDao" />
+
+	<!-- Publication du bean en tant que service OSGI -->
+	<!-- Ce bean possede des proprietes a injecter. L'injection de ces proprietes 
+		(ici la propriete entityManager) est faite immediatement apres la creation 
+		du bean -->
+	<bean id="customerDao"
+		class="com.exemple.customerRestFulHibernateWS.data.impl.CustomerDaoImpl">
+		<property name="logService" ref="logService" />
+
+		<!-- Etablissement des transactions pour toutes les methodes DAO. L'application 
+			n'a pas besoin de creer l'entity manager que nous avons declare. La OSGI 
+			runtime creera cet entity manager et l'injectera partout ou il est requis. 
+			la balise "<tx:transaction>" permet de demander au runtime d'envelopper les 
+			methodes dans une transaction. -->
+		<tx:transaction method="*" value="Required" />
+	</bean>
+
+	<!-- Definition des dependances -->
+	<reference id="logService" interface="org.osgi.service.log.LogService" />
+
+</blueprint>

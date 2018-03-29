@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+	xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws" xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+	xmlns:cxf="http://cxf.apache.org/blueprint/core"
+	xsi:schemaLocation="
+  http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+  http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd
+  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
+
+	<!-- Definition de l'enregistrement du service dans le registre de services 
+		OSGI. On renseigne le bean qui fournit le service via l'attribut ref -->
+	<service ref="customerService"
+		interface="com.exemple.customerRestFulHibernateWS.services.CustomerService">
+		<service-properties>
+			<entry key="service.exported.interfaces" value="*" />
+		</service-properties>
+	</service>
+
+	<!-- Les runtimes d'applications OSGI traitent les services distants differemment 
+		de ceux en local a cause de la semantique d'invocation par defaut qui est 
+		differente (passage par reference local versus passage par valeur distant). 
+		Pour eviter qu'une application appelle accidentellement un service exporte 
+		qui est uniquement designe par un appel par "passage de valeur", il faut 
+		cacher le lookup local. La solution est d'exporter le meme bean deux fois 
+		: une fois pour les appels distants et une autre pour les appels locaux. 
+		En d'autres termes, on ajoute un autre element avec la meme configuration 
+		mais sans la propriete "service.exported.interfaces" -->
+	<service ref="customerService"
+		interface="com.exemple.customerRestFulHibernateWS.services.CustomerService" />
+
+
+	<!-- Declaration du bean customerService implemente par le POJO com.example.services.impl.CustomerServiceImpl -->
+	<!-- Ce bean possede des proprietes a injecter. L'injection de ces proprietes 
+		(ici une instance de la classe CustomerDao et une de la classe LogService) 
+		est faite immediatement apres la creation du bean -->
+	<bean id="customerService"
+		class="com.exemple.customerRestFulHibernateWS.services.impl.CustomerServiceImpl">
+		<property name="customerDao" ref="customerDao" />
+	</bean>
+
+	<!-- Definition des dependances -->
+	<reference id="customerDao"
+		interface="com.exemple.customerRestFulHibernateWS.data.CustomerDao" />
+</blueprint>

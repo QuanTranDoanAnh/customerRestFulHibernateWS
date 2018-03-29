@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+	xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs" xmlns:cxf="http://cxf.apache.org/blueprint/core"
+	xsi:schemaLocation="
+  http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+  http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd
+  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
+
+	<!-- Configuration des logs CXF afin de faire apparaître les requetes recues 
+		et les reponses fournies, dans le journal de Karaf -->
+	<cxf:bus id="bus">
+		<cxf:features>
+			<cxf:logging />
+		</cxf:features>
+	</cxf:bus>
+
+	<!-- Configuration du endpoint JAX-RS dans le container OSGI -->
+	<jaxrs:server address="/olivier" id="olivier">
+		<jaxrs:serviceBeans>
+			<ref component-id="customerRestService" />
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+
+
+	<!-- Declaration du bean customerRestService implemente par le POJO com.exemple.karaf.jaxrs.CustomerRestService -->
+	<!-- Ce bean possede une propriete a injecter. L'injection de cette propriete 
+		(ici une instance de la classe CustomerService) est faite immediatement apres 
+		la creation du bean -->
+	<bean id="customerRestService"
+		class="com.exemple.customerRestFulHibernateWS.jaxrs.CustomerRestService">
+		<property name="customerService" ref="customerService" />
+	</bean>
+
+	<!-- Definition des dependances -->
+	<reference id="customerService"
+		interface="com.exemple.customerRestFulHibernateWS.services.CustomerService" />
+</blueprint>

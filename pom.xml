@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.exemple.customerRestFulHibernateWS</groupId>
+	<artifactId>customerRestFulHibernateWS</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>customerRestFulHibernateWS</name>
+
+	<properties>
+		<cxf.version>3.2.2</cxf.version>
+		<osgi.version>6.0.0</osgi.version>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<!-- Introduction de la balise <dependencyManagement> qui permet de centraliser 
+		les informations de dependances. Quand on a un ensemble de projets qui heritent 
+		d'un parent commun, on peut mettre toutes les informations de dependance 
+		dans le POM commun et avoir des references plus simples vers les artefacts 
+		dans les POM enfants. Ceci permet de consolider et de centraliser la gestion 
+		des versions des dependances sans ajouter des dependances qui sont heritees 
+		par tous les sous-modules. C'est tres interessant quand on a un ensemble 
+		de projets qui heritent d'un meme parent -->
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Module utile au "module-jaxrs" -->
+			<!-- <dependency>
+				<groupId>com.exemple.customerRestFulHibernateWS</groupId>
+				<artifactId>module-services</artifactId>
+				<version>${project.version}</version>
+			</dependency> -->
+
+			<!-- Module utile au "module-jaxrs" et au "module-services" -->
+			<!-- <dependency>
+				<groupId>com.exemple.customerRestFulHibernateWS</groupId>
+				<artifactId>module-data</artifactId>
+				<version>${project.version}</version>
+			</dependency> -->
+
+			<!-- Dependance pour BundleContext -->
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>${osgi.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Dependance necessaire pour le service web REST (GET, POST, PUT, Response, 
+				...) -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${cxf.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Dependances necessaires pour la dependance org.apache.cxf/cxf-rt-frontend-jaxrs -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${cxf.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http</artifactId>
+				<version>${cxf.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Dependance necessaire pour org.slf4j.Logger -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http-jetty</artifactId>
+				<version>${cxf.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Dependance pour org.osgi.service.log.LogService -->
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>5.0.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- JPA -->
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>javax.persistence</artifactId>
+                <version>2.1.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>module-jaxrs</module>
+    <module>module-services</module>
+    <module>module-data</module>
+    <module>module-kar</module>
+  </modules>
+
+
+</project>
