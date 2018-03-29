@@ -4,9 +4,9 @@ Most recent update of how to create Restful web services with Karaf 4.1.x, JPA2 
 Since Karaf 4.1.x & Pax JDBC 1.1.0 there are many changes in APIs, comparing to Liquidbase Tutorial of Karaf.
 
 + Prerequisite:
-- Karaf 4.1.5
-- Maven
-- Eclipse
+* Karaf 4.1.5
+* Maven
+* Eclipse
 
 + How to play with it
 1. Start Karaf
@@ -17,4 +17,4 @@ Since Karaf 4.1.x & Pax JDBC 1.1.0 there are many changes in APIs, comparing to 
 6. Use browser to access `http://localhost:8181/cxf/olivier/customer/1` or `http://localhost:8181/cxf/olivier/customer/1/orders`
 
 + Attention
-- Be aware of table name which duplicate "identifiers" like 'User', 'Order' etc.
+* Be aware of table name which duplicate "identifiers" like 'User', 'Order' etc.
